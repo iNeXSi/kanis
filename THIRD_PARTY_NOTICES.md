@@ -7,4 +7,4 @@
 - Development dependencies retain their licenses in node_modules and are listed in package-lock.json.
 
 RAMMap is an optional separate Microsoft download; no Microsoft RAMMap executable or license acceptance is redistributed by this project.
-Private Thmanyah font files are not included in this public source or release. The public build uses system fonts.
+Thmanyah font assets (thmanyah serif display Regular/Medium/Bold and thmanyah sans Black) are included with the project owner's explicit confirmation that their license permits embedding and redistribution. Font rights remain with their respective rights holders; the Kanis MIT code license does not relicense these font assets.

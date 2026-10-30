@@ -1,4 +1,43 @@
-/* Public release uses system fonts; no private Thmanyah font files are distributed. */
-:root{--font-interface:"Segoe UI",Tahoma,Arial,sans-serif;font-family:var(--font-interface);font-synthesis:none}
-.brand strong{font-family:var(--font-interface);font-weight:700;line-height:1.3}
-.dhikr-card blockquote{font-family:var(--font-interface);font-weight:400}
+/* Thmanyah assets redistributed with project-owner permission. Genuine static weights only. */
+@font-face {
+  font-family: "thmanyah serif display";
+  src: url("./assets/fonts/thmanyahserifdisplay-Regular.otf") format("opentype");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "thmanyah serif display";
+  src: url("./assets/fonts/thmanyahserifdisplay-Medium.otf") format("opentype");
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+}
+@font-face {
+  font-family: "thmanyah serif display";
+  src: url("./assets/fonts/thmanyahserifdisplay-Bold.otf") format("opentype");
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: "thmanyah sans";
+  src: url("./assets/fonts/thmanyahsans-Black.otf") format("opentype");
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+}
+:root {
+  --font-interface: "thmanyah serif display", "Segoe UI", Tahoma, sans-serif;
+  font-family: var(--font-interface);
+  font-synthesis: none;
+}
+.brand strong {
+  font-family: "thmanyah sans", "Segoe UI", sans-serif;
+  font-weight: 900;
+  line-height: 1.3;
+}
+.dhikr-card blockquote {
+  font-family: var(--font-interface);
+  font-weight: 400;
+}

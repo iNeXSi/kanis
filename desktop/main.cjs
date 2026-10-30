@@ -203,6 +203,7 @@ app.whenReady().then(async()=>{
       if(Object.values(checks).some(value=>value!==true))throw Error('STARTUP_QA_FAILED');
     }else if(process.argv.includes('--qa-release'))await require('./qa-release.cjs').capture(win,qaRoot,{cleaner,dialog});
     else if(process.argv.includes('--qa-rammap'))await require('./qa-rammap.cjs').capture(win,qaRoot);
+    else if(process.argv.includes('--qa-fonts'))await require('./qa-fonts.cjs').capture(win,qaRoot);
     else if(process.argv.includes('--qa-auto-memory'))await require('./qa-auto-memory.cjs').capture(win,qaRoot);
 
     else if(process.argv.includes('--qa-memory'))await require('./qa-memory.cjs').capture(win,qaRoot);

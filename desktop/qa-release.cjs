@@ -27,7 +27,7 @@ async function capture(win,root,{cleaner,dialog}){
   checks.qaCannotTrim=await evaluate(`window.kanis.rammapTrim(true).then(()=>false,e=>e.message.includes('QA_READ_ONLY'))`);
   await shot('memory');await click('الإعدادات');
   await evaluate(`(()=>{const s=document.querySelector('select[aria-label="Language / اللغة"]');s.value='en';s.dispatchEvent(new Event('change',{bubbles:true}));})()`);
-  await until(`document.documentElement.dir==='ltr'&&document.body.innerText.includes('Windows edition 0.6.0')`);
+  await until(`document.documentElement.dir==='ltr'&&document.body.innerText.includes('Windows edition 0.6.1')`);
   checks.englishAndVersion=true;await click('Overview');await shot('english');await click('Toggle theme');await until(`document.documentElement.dataset.theme==='dark'`);
   win.setSize(780,850);await pause(700);checks.narrowNoOverflow=await evaluate(`document.documentElement.scrollWidth<=innerWidth`);await shot('dark-narrow');
  }finally{dialog.showOpenDialog=originalDialog;await fs.writeFile(path.join(root,'release-check.json'),JSON.stringify(checks,null,2));}
