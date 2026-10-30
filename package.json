@@ -13,13 +13,13 @@
     "package:win": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/package.ps1"
   },
   "dependencies": {
+    "lucide-react": "^0.468.0",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0",
-    "lucide-react": "^0.468.0"
+    "react-dom": "^19.1.0"
   },
   "devDependencies": {
-    "vite": "^7.3.6",
-    "electron": "44.7.2"
+    "electron": "44.10.0",
+    "vite": "^7.3.6"
   },
   "license": "MIT",
   "repository": {
