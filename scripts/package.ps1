@@ -18,7 +18,9 @@ try {
   New-Item -ItemType Directory -Path $releasePath -Force | Out-Null
   if ($ElectronZip) { Expand-Archive -LiteralPath $ElectronZip -DestinationPath $releasePath }
   else {
-    $runtime = & node -p "require('path').dirname(require('electron'))"
+    $runtimeOutput = & node -p "require('path').dirname(require('electron'))"
+    if ($LASTEXITCODE -ne 0) { throw 'Electron download failed' }
+    $runtime = @($runtimeOutput)[-1].Trim()
     if ($LASTEXITCODE -ne 0 -or -not (Test-Path -LiteralPath (Join-Path $runtime 'electron.exe'))) { throw 'Run npm ci first' }
     Copy-Item -Path (Join-Path $runtime '*') -Destination $releasePath -Recurse
   }
