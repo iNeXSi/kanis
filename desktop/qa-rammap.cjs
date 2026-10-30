@@ -1,0 +1,30 @@
+const fs=require('node:fs/promises'),path=require('node:path');
+const pause=ms=>new Promise(r=>setTimeout(r,ms));
+async function capture(win,root){
+  await fs.mkdir(root,{recursive:true});
+  const evaluate=s=>win.webContents.executeJavaScript(s);
+  await pause(1500);
+  await evaluate(`(()=>{const b=[...document.querySelectorAll('button')].find(b=>b.textContent.trim()==='الذاكرة');b.click();})()`);
+  await pause(1000);
+  const checks={};
+  checks.installed=await evaluate(`window.kanis.rammapStatus().then(s=>s.installed===true)`);
+  checks.readyButton=await evaluate(`!![...document.querySelectorAll('.rammap-panel button')].find(b=>b.textContent.trim()==='تقليل الرام الآن'&&!b.disabled)`);
+  checks.autoOff=await evaluate(`window.kanis.settings().then(s=>s.autoMemory===false)`);
+  checks.qaCannotTrim=await evaluate(`window.kanis.rammapTrim(true).then(()=>false,e=>e.message.includes('QA_READ_ONLY'))`);
+  checks.noOverflow=await evaluate(`document.documentElement.scrollWidth<=innerWidth`);
+  await fs.writeFile(path.join(root,'manual.png'),(await win.webContents.capturePage()).toPNG());
+  await evaluate(`(()=>{[...document.querySelectorAll('.rammap-panel button')].find(b=>b.textContent.trim()==='تقليل الرام الآن').click();})()`);
+  await pause(400);
+  checks.scopeReview=await evaluate(`document.body.innerText.includes('تقليل رام البرامج المفتوحة والخلفية')&&document.body.innerText.includes('متابعة وطلب صلاحية المسؤول')`);
+  await fs.writeFile(path.join(root,'review.png'),(await win.webContents.capturePage()).toPNG());
+  await evaluate(`(()=>{[...document.querySelectorAll('.modal-footer button')].find(b=>b.textContent.trim()==='إلغاء').click();})()`);
+  await pause(300);
+  checks.cancelClosesReview=await evaluate(`!document.querySelector('.rammap-panel .modal-footer')`);
+  await evaluate(`(()=>{[...document.querySelectorAll('button')].find(b=>b.getAttribute('aria-label')==='تبديل المظهر').click();})()`);
+  win.setSize(780,850);await pause(500);
+  checks.darkNoOverflow=await evaluate(`document.documentElement.dataset.theme==='dark'&&document.documentElement.scrollWidth<=innerWidth`);
+  await fs.writeFile(path.join(root,'manual-dark.png'),(await win.webContents.capturePage()).toPNG());
+  await fs.writeFile(path.join(root,'checks.json'),JSON.stringify(checks,null,2));
+  if(Object.values(checks).some(v=>v!==true))throw Error('RAMMAP_UI_QA_FAILED');
+}
+module.exports={capture};

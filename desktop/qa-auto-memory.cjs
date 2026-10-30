@@ -1,0 +1,38 @@
+const fs=require('node:fs/promises'),path=require('node:path');
+const pause=ms=>new Promise(r=>setTimeout(r,ms));
+async function capture(win,root){
+  await fs.mkdir(root,{recursive:true});
+  const evaluate=s=>win.webContents.executeJavaScript(s);
+  await pause(2000);
+  await evaluate(`(()=>{const b=[...document.querySelectorAll('button')].find(b=>b.textContent.trim()==='الذاكرة');b.click();})()`);
+  await pause(1000);
+  const checks={};
+  checks.defaultOff=await evaluate(`!document.querySelector('.memory-auto input').checked`);
+  checks.defaultThreshold85=await evaluate(`document.querySelector('.memory-auto select').value==='85'`);
+  checks.rammapProvider=await evaluate(`window.kanis.system().then(s=>s.memoryAuto.provider==='rammap')`);
+  await evaluate(`document.querySelector('.memory-auto input').click()`);
+  await pause(800);
+  checks.enabledSaved=await evaluate(`window.kanis.settings().then(s=>s.autoMemory===true)`);
+  await evaluate(`(()=>{const s=document.querySelector('.memory-auto select');s.value='90';s.dispatchEvent(new Event('change',{bubbles:true}));})()`);
+  await pause(800);
+  checks.thresholdSaved=await evaluate(`window.kanis.settings().then(s=>s.autoMemoryThreshold===90)`);
+  checks.qaPreventsExecution=await evaluate(`window.kanis.system().then(s=>s.memoryAuto.lastAttempt===0&&!s.memoryAuto.running)`);
+  await evaluate(`document.querySelector('.memory-auto input').click()`);
+  await pause(800);
+  checks.disabledSaved=await evaluate(`window.kanis.settings().then(s=>s.autoMemory===false)`);
+  await evaluate(`(()=>{const s=document.querySelector('.memory-auto select');s.value='85';s.dispatchEvent(new Event('change',{bubbles:true}));})()`);
+  await pause(400);
+  await evaluate(`document.querySelector('.memory-auto input').click()`);
+  await pause(500);
+  checks.enabledAt85=await evaluate(`window.kanis.settings().then(s=>s.autoMemory===true&&s.autoMemoryThreshold===85)`);
+  checks.noOverflow=await evaluate(`document.documentElement.scrollWidth<=innerWidth`);
+  await fs.writeFile(path.join(root,'automatic.png'),(await win.webContents.capturePage()).toPNG());
+  await evaluate(`(()=>{const b=[...document.querySelectorAll('button')].find(b=>b.getAttribute('aria-label')==='تبديل المظهر');b.click();})()`);
+  win.setSize(780,850);await pause(800);
+  checks.darkNoOverflow=await evaluate(`document.documentElement.dataset.theme==='dark'&&document.documentElement.scrollWidth<=innerWidth`);
+  await fs.writeFile(path.join(root,'automatic-dark.png'),(await win.webContents.capturePage()).toPNG());
+  await evaluate(`document.querySelector('.memory-auto input').click()`);
+  await fs.writeFile(path.join(root,'automatic-check.json'),JSON.stringify(checks,null,2));
+  if(Object.values(checks).some(v=>v!==true))throw Error('AUTOMATIC_UI_QA_FAILED');
+}
+module.exports={capture};

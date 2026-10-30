@@ -1,0 +1,4 @@
+/* Public release uses system fonts; no private Thmanyah font files are distributed. */
+:root{--font-interface:"Segoe UI",Tahoma,Arial,sans-serif;font-family:var(--font-interface);font-synthesis:none}
+.brand strong{font-family:var(--font-interface);font-weight:700;line-height:1.3}
+.dhikr-card blockquote{font-family:var(--font-interface);font-weight:400}

@@ -1,0 +1,2 @@
+export function eligibleDhikr(items,hour){const period=hour>=4&&hour<12?'morning':hour>=16&&hour<21?'evening':hour>=21||hour<4?'sleep':'general';return items.filter(item=>item.type==='general'||item.type===period);}
+export function nextDhikr(items,current,hour){const eligible=eligibleDhikr(items,hour);const index=eligible.findIndex(item=>item.text===current?.text);return eligible[(index+1)%eligible.length]||items[0];}
